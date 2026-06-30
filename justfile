@@ -7,3 +7,6 @@ test:
     python3 -m unittest discover -s tests -p 'test_*.py'
 
 proof: validate test
+
+agent-acceptance:
+    bash scripts/run_codex_local_acceptance.sh
