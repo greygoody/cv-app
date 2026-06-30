@@ -15,19 +15,53 @@ PLUGIN_ADDED=0
 MARKETPLACE_ADDED=0
 
 cleanup() {
-  local exit_code=$?
+  local original_exit=$?
+  local cleanup_failed=0
+
   if [[ "$PLUGIN_ADDED" == "1" ]]; then
-    codex plugin remove "cv-app@$MARKETPLACE_NAME" --json \
-      > "$OUT_ROOT/plugin-remove.json" 2> "$OUT_ROOT/plugin-remove.stderr" || true
+    if ! codex plugin remove "cv-app@$MARKETPLACE_NAME" --json \
+      > "$OUT_ROOT/plugin-remove.json" 2> "$OUT_ROOT/plugin-remove.stderr"; then
+      cleanup_failed=1
+    fi
   fi
+
   if [[ "$MARKETPLACE_ADDED" == "1" ]]; then
-    codex plugin marketplace remove "$MARKETPLACE_NAME" --json \
-      > "$OUT_ROOT/marketplace-remove.json" 2> "$OUT_ROOT/marketplace-remove.stderr" || true
+    if ! codex plugin marketplace remove "$MARKETPLACE_NAME" --json \
+      > "$OUT_ROOT/marketplace-remove.json" 2> "$OUT_ROOT/marketplace-remove.stderr"; then
+      cleanup_failed=1
+    fi
   fi
+
   rm -rf "$TMP_ROOT"
-  exit "$exit_code"
+
+  python3 - "$OUT_ROOT/cleanup-status.json" "$PLUGIN_ADDED" "$MARKETPLACE_ADDED" "$cleanup_failed" <<'PY'
+import json
+import sys
+from pathlib import Path
+path = Path(sys.argv[1])
+payload = {
+    "kind": "cv-app.acceptance-cleanup",
+    "version": 1,
+    "plugin_cleanup_required": sys.argv[2] == "1",
+    "marketplace_cleanup_required": sys.argv[3] == "1",
+    "status": "failed" if sys.argv[4] == "1" else "passed",
 }
-trap cleanup EXIT INT TERM
+path.write_text(json.dumps(payload, sort_keys=True) + "\n", encoding="utf-8")
+PY
+
+  if [[ "$original_exit" == "0" && "$cleanup_failed" == "0" ]]; then
+    printf '\nAcceptance passed. Artifacts: %s\n' "$OUT_ROOT"
+    exit 0
+  fi
+  if [[ "$original_exit" == "0" ]]; then
+    printf 'cv-app acceptance error: cleanup failed; inspect %s\n' "$OUT_ROOT" >&2
+    exit 1
+  fi
+  exit "$original_exit"
+}
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
 
 fail() {
   printf 'cv-app acceptance error: %s\n' "$*" >&2
@@ -48,11 +82,16 @@ printf '%s\n' "$REF" > "$OUT_ROOT/requested-ref.txt"
 codex --version > "$OUT_ROOT/codex-version.txt"
 python3 --version > "$OUT_ROOT/python-version.txt" 2>&1
 git --version > "$OUT_ROOT/git-version.txt"
+if ! codex login status > "$OUT_ROOT/codex-login-status.txt" 2> "$OUT_ROOT/codex-login-status.stderr"; then
+  fail "Codex is not authenticated; run 'codex login' first"
+fi
 
-printf 'Cloning %s at %s...\n' "$REPO_URL" "$REF"
-git clone --no-checkout "$REPO_URL" "$CLONE_ROOT" \
+printf 'Cloning %s and resolving %s...\n' "$REPO_URL" "$REF"
+git clone --filter=blob:none --no-checkout "$REPO_URL" "$CLONE_ROOT" \
   > "$OUT_ROOT/clone.stdout" 2> "$OUT_ROOT/clone.stderr"
-git -C "$CLONE_ROOT" checkout --detach "$REF" \
+git -C "$CLONE_ROOT" fetch --depth=1 origin "$REF" \
+  > "$OUT_ROOT/fetch.stdout" 2> "$OUT_ROOT/fetch.stderr"
+git -C "$CLONE_ROOT" checkout --detach FETCH_HEAD \
   > "$OUT_ROOT/checkout.stdout" 2> "$OUT_ROOT/checkout.stderr"
 git -C "$CLONE_ROOT" rev-parse HEAD > "$OUT_ROOT/tested-commit.txt"
 
@@ -147,5 +186,3 @@ python3 "$CLONE_ROOT/scripts/validate_agent_acceptance.py" \
 git -C "$CANDIDATE_ROOT" status --porcelain --untracked-files=all \
   > "$OUT_ROOT/candidate-status.txt"
 cp "$CANDIDATE_ROOT/session-closure.md" "$OUT_ROOT/session-closure.md"
-
-printf '\nAcceptance passed. Artifacts: %s\n' "$OUT_ROOT"
