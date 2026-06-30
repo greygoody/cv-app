@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "cv-app local Codex acceptance report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "status",
+    "skill_used",
+    "candidate_id",
+    "focus_id",
+    "source_files_read",
+    "closure_state",
+    "selected_model_id",
+    "rejected_model_ids",
+    "retained_unknown_ids",
+    "prohibited_inference_ids",
+    "closure_file",
+    "closure_written",
+    "canonical_mutation_performed",
+    "summary"
+  ],
+  "properties": {
+    "status": { "const": "passed" },
+    "skill_used": { "const": "grind-with-doc" },
+    "candidate_id": { "const": "candidate.morgan-vale" },
+    "focus_id": { "const": "focus.technical-lead-vs-integration-owner" },
+    "source_files_read": {
+      "type": "array",
+      "prefixItems": [{ "const": "source.md" }],
+      "items": false,
+      "minItems": 1,
+      "maxItems": 1
+    },
+    "closure_state": { "const": "resolved-proposed" },
+    "selected_model_id": { "const": "installation-integration-owner-operational-handoff" },
+    "rejected_model_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "allOf": [
+        { "contains": { "const": "whole-exhibition-technical-lead" } },
+        { "contains": { "const": "documentation-only-technician" } }
+      ],
+      "minItems": 2
+    },
+    "retained_unknown_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "allOf": [
+        { "contains": { "const": "post-installation-ownership-duration" } },
+        { "contains": { "const": "measured-reliability-or-recovery-effect" } }
+      ],
+      "minItems": 2
+    },
+    "prohibited_inference_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "allOf": [
+        { "contains": { "const": "formal-project-wide-leadership" } },
+        { "contains": { "const": "people-management" } },
+        { "contains": { "const": "budget-or-creative-authority" } },
+        { "contains": { "const": "quantified-reliability-impact" } }
+      ],
+      "minItems": 4
+    },
+    "closure_file": { "const": "session-closure.md" },
+    "closure_written": { "const": true },
+    "canonical_mutation_performed": { "const": false },
+    "summary": {
+      "type": "string",
+      "minLength": 40,
+      "maxLength": 800
+    }
+  }
+}
