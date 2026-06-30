@@ -158,7 +158,10 @@ CODEX_ARGS=(
   --ephemeral
   --sandbox workspace-write
   --ask-for-approval never
-  --search=false
+  --config 'web_search="disabled"'
+  --config 'mcp_servers={}'
+  --config 'apps={}'
+  --config 'history.persistence="none"'
   --json
   --output-schema "$CLONE_ROOT/tests/agent/output.schema.json"
   --output-last-message "$OUT_ROOT/report.json"
