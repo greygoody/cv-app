@@ -83,14 +83,18 @@ The consumer runs with:
 ```text
 --ephemeral
 --sandbox workspace-write
---ask-for-approval never
+approval_policy="never"
 web_search="disabled"
 mcp_servers={}
 apps={}
 history.persistence="none"
 ```
 
+`approval_policy="never"` is supplied through the documented `--config` path. The harness does not place the global `--ask-for-approval` flag after the `exec` subcommand, because Codex CLI 0.142.4 rejects that placement.
+
 The explicit configuration removes cached and live web search, inherited MCP servers, and inherited app tool surfaces from the nested consumer run. Its working directory contains only a committed synthetic `source.md`. The validator requires the sole mutation to be an untracked `session-closure.md`.
+
+The harness records `codex exec --help` in `codex-exec-help.txt` so CLI compatibility can be inspected from the acceptance artifacts.
 
 ## Cleanup
 
