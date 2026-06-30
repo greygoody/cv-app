@@ -61,18 +61,26 @@ Invoke the skill explicitly with `$grind-with-doc`, or describe a matching profe
 ## Repository structure
 
 ```text
-.codex-plugin/plugin.json             plugin manifest
-.agents/plugins/marketplace.json      local repository marketplace
-skills/grind-with-doc/                progressive alignment skill
-examples/synthetic-candidate/         public synthetic proof fixture
-scripts/validate_plugin.py            package and privacy validation
-scripts/run_codex_local_acceptance.sh installed-plugin agent harness
-tests/agent/                           model-backed prompt, schema, and docs
-tests/                                 fail-closed deterministic tests
-docs/architecture.md                  product and extraction boundary
+.codex-plugin/plugin.json               plugin manifest
+.agents/plugins/marketplace.json        local repository marketplace
+skills/grind-with-doc/                  progressive alignment skill
+examples/synthetic-candidate/           public synthetic proof fixture
+scripts/validate_plugin.py              package and privacy validation
+scripts/run_local_acceptance_workcell.sh dependency-free supervisor entrypoint
+scripts/run_codex_local_acceptance.sh   installed-plugin agent harness
+tests/agent/                            model-backed prompt, schema, and docs
+tests/                                   fail-closed deterministic tests
+docs/architecture.md                    product and extraction boundary
 ```
 
 ## Deterministic proof
+
+```sh
+python3 scripts/validate_plugin.py
+python3 -m unittest discover -s tests -p 'test_*.py'
+```
+
+When `just` is installed, this is available as:
 
 ```sh
 just proof
@@ -82,13 +90,25 @@ The proof validates plugin paths, skill metadata, marketplace wiring, synthetic-
 
 ## Local Codex acceptance
 
-On a trusted machine with a current authenticated Codex CLI:
+On a trusted machine with Bash, Git, Python 3, and an authenticated current Codex CLI:
+
+```sh
+bash scripts/run_local_acceptance_workcell.sh
+```
+
+`just` is optional. When present, the equivalent convenience command is:
 
 ```sh
 just agent-acceptance
 ```
 
-This opt-in harness:
+The dependency-free entrypoint:
+
+1. runs deterministic plugin validation;
+2. runs the complete unit-test suite;
+3. invokes the installed-plugin acceptance harness.
+
+The nested harness:
 
 1. clones the selected repository ref;
 2. runs deterministic proof on the clone;
