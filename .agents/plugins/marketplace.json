@@ -1,0 +1,20 @@
+{
+  "name": "cv-app-development",
+  "interface": {
+    "displayName": "CV App Development"
+  },
+  "plugins": [
+    {
+      "name": "cv-app",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
