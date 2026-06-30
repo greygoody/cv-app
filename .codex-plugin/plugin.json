@@ -1,0 +1,38 @@
+{
+  "name": "cv-app",
+  "version": "0.1.0",
+  "description": "Progressively clarify, evidence, and project professional identity without forcing one-shot CV generation.",
+  "author": {
+    "name": "greygoody",
+    "url": "https://github.com/greygoody"
+  },
+  "homepage": "https://github.com/greygoody/cv-app",
+  "repository": "https://github.com/greygoody/cv-app",
+  "license": "MIT",
+  "keywords": [
+    "career",
+    "cv",
+    "resume",
+    "professional-identity",
+    "evidence",
+    "codex"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "CV App",
+    "shortDescription": "Progressive professional identity and CV alignment",
+    "longDescription": "Work iteratively with one professional-identity uncertainty at a time, distinguish evidence from interpretation, compare defensible framings, and close with a reviewed proposal or retained unknowns.",
+    "developerName": "greygoody",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/greygoody/cv-app",
+    "defaultPrompt": [
+      "Use CV App to help me clarify one part of my professional identity without rewriting my whole CV yet.",
+      "Use grind-with-doc to examine this experience and determine which claims are supported, limited, or still unknown.",
+      "Help me compare two possible professional framings and close with a reviewable proposal."
+    ]
+  }
+}
