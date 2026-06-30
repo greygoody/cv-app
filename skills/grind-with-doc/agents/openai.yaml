@@ -1,0 +1,6 @@
+interface:
+  display_name: "Grind with document"
+  short_description: "Resolve one professional-identity uncertainty iteratively"
+  default_prompt: "Work with me on one bounded professional-identity uncertainty. Preserve my statements, separate evidence from interpretation, compare defensible models, and close with a reviewed proposal or retained unknowns instead of rewriting my whole CV immediately."
+policy:
+  allow_implicit_invocation: true
