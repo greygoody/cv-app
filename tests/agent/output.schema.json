@@ -20,51 +20,65 @@
     "summary"
   ],
   "properties": {
-    "status": { "const": "passed" },
-    "skill_used": { "const": "grind-with-doc" },
-    "candidate_id": { "const": "candidate.morgan-vale" },
-    "focus_id": { "const": "focus.technical-lead-vs-integration-owner" },
+    "status": { "type": "string", "enum": ["passed"] },
+    "skill_used": { "type": "string", "enum": ["grind-with-doc"] },
+    "candidate_id": { "type": "string", "enum": ["candidate.morgan-vale"] },
+    "focus_id": {
+      "type": "string",
+      "enum": ["focus.technical-lead-vs-integration-owner"]
+    },
     "source_files_read": {
       "type": "array",
-      "prefixItems": [{ "const": "source.md" }],
-      "items": false,
+      "items": { "type": "string", "enum": ["source.md"] },
       "minItems": 1,
       "maxItems": 1
     },
-    "closure_state": { "const": "resolved-proposed" },
-    "selected_model_id": { "const": "installation-integration-owner-operational-handoff" },
+    "closure_state": { "type": "string", "enum": ["resolved-proposed"] },
+    "selected_model_id": {
+      "type": "string",
+      "enum": ["installation-integration-owner-operational-handoff"]
+    },
     "rejected_model_ids": {
       "type": "array",
-      "uniqueItems": true,
-      "allOf": [
-        { "contains": { "const": "whole-exhibition-technical-lead" } },
-        { "contains": { "const": "documentation-only-technician" } }
-      ],
-      "minItems": 2
+      "items": {
+        "type": "string",
+        "enum": [
+          "whole-exhibition-technical-lead",
+          "documentation-only-technician"
+        ]
+      },
+      "minItems": 2,
+      "maxItems": 2
     },
     "retained_unknown_ids": {
       "type": "array",
-      "uniqueItems": true,
-      "allOf": [
-        { "contains": { "const": "post-installation-ownership-duration" } },
-        { "contains": { "const": "measured-reliability-or-recovery-effect" } }
-      ],
-      "minItems": 2
+      "items": {
+        "type": "string",
+        "enum": [
+          "post-installation-ownership-duration",
+          "measured-reliability-or-recovery-effect"
+        ]
+      },
+      "minItems": 2,
+      "maxItems": 2
     },
     "prohibited_inference_ids": {
       "type": "array",
-      "uniqueItems": true,
-      "allOf": [
-        { "contains": { "const": "formal-project-wide-leadership" } },
-        { "contains": { "const": "people-management" } },
-        { "contains": { "const": "budget-or-creative-authority" } },
-        { "contains": { "const": "quantified-reliability-impact" } }
-      ],
-      "minItems": 4
+      "items": {
+        "type": "string",
+        "enum": [
+          "formal-project-wide-leadership",
+          "people-management",
+          "budget-or-creative-authority",
+          "quantified-reliability-impact"
+        ]
+      },
+      "minItems": 4,
+      "maxItems": 4
     },
-    "closure_file": { "const": "session-closure.md" },
-    "closure_written": { "const": true },
-    "canonical_mutation_performed": { "const": false },
+    "closure_file": { "type": "string", "enum": ["session-closure.md"] },
+    "closure_written": { "type": "boolean" },
+    "canonical_mutation_performed": { "type": "boolean" },
     "summary": {
       "type": "string",
       "minLength": 40,
