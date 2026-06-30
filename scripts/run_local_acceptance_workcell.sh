@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+
+python3 scripts/validate_plugin.py
+python3 -m unittest discover -s tests -p 'test_*.py'
+bash scripts/run_codex_local_acceptance.sh
