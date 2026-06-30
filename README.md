@@ -48,7 +48,13 @@ For repository distribution after the desired branch is available:
 codex plugin marketplace add greygoody/cv-app --ref main
 ```
 
-Restart Codex, open `/plugins`, select the `CV App Development` marketplace, and install `CV App`.
+Install from the configured marketplace non-interactively:
+
+```sh
+codex plugin add cv-app --marketplace cv-app-development
+```
+
+Or restart Codex, open `/plugins`, select the `CV App Development` marketplace, and install `CV App`.
 
 Invoke the skill explicitly with `$grind-with-doc`, or describe a matching professional-identity uncertainty and let Codex select it implicitly.
 
@@ -60,17 +66,46 @@ Invoke the skill explicitly with `$grind-with-doc`, or describe a matching profe
 skills/grind-with-doc/                progressive alignment skill
 examples/synthetic-candidate/         public synthetic proof fixture
 scripts/validate_plugin.py            package and privacy validation
-tests/                                fail-closed validation tests
+scripts/run_codex_local_acceptance.sh installed-plugin agent harness
+tests/agent/                           model-backed prompt, schema, and docs
+tests/                                 fail-closed deterministic tests
 docs/architecture.md                  product and extraction boundary
 ```
 
-## Proof
+## Deterministic proof
 
 ```sh
 just proof
 ```
 
-The proof validates plugin paths, skill metadata, marketplace wiring, synthetic-fixture declarations, absence of advertised missing components, and optional local private-marker scanning.
+The proof validates plugin paths, skill metadata, marketplace wiring, synthetic-fixture declarations, absence of advertised missing components, optional local private-marker scanning, and the acceptance-result validator.
+
+## Local Codex acceptance
+
+On a trusted machine with a current authenticated Codex CLI:
+
+```sh
+just agent-acceptance
+```
+
+This opt-in harness:
+
+1. clones the selected repository ref;
+2. runs deterministic proof on the clone;
+3. creates a unique temporary Codex marketplace;
+4. installs the actual cloned plugin;
+5. creates a fresh synthetic candidate Git repository;
+6. spawns a separate `codex exec` consumer using `$grind-with-doc`;
+7. validates the JSONL event stream, schema-constrained final report, closure content, unchanged source, and exact mutation set;
+8. removes only the temporary plugin and marketplace it introduced.
+
+The exact outer-agent prompt is in:
+
+```text
+tests/agent/prompts/local-supervisor-workcell.md
+```
+
+Detailed prerequisites and limitations are documented in `tests/agent/README.md`.
 
 ## Privacy boundary
 
