@@ -9,4 +9,4 @@ test:
 proof: validate test
 
 agent-acceptance:
-    bash scripts/run_codex_local_acceptance.sh
+    bash scripts/run_local_acceptance_workcell.sh
