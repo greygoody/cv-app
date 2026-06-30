@@ -84,16 +84,19 @@ The consumer runs with:
 --ephemeral
 --sandbox workspace-write
 --ask-for-approval never
---search=false
+web_search="disabled"
+mcp_servers={}
+apps={}
+history.persistence="none"
 ```
 
-Its working directory contains only a committed synthetic `source.md`. The validator requires the sole mutation to be an untracked `session-closure.md`.
+The explicit configuration removes cached and live web search, inherited MCP servers, and inherited app tool surfaces from the nested consumer run. Its working directory contains only a committed synthetic `source.md`. The validator requires the sole mutation to be an untracked `session-closure.md`.
 
 ## Cleanup
 
 The runner creates a unique marketplace name for every invocation. It removes only the plugin and marketplace created under that unique name. Cleanup runs through a shell trap even when the consumer or validator fails.
 
-The generated output directory retains installation, execution, validation, and cleanup receipts for inspection.
+Cleanup failure makes the entire acceptance run fail. The generated output directory retains installation, execution, validation, and cleanup receipts for inspection.
 
 ## Honest limitations
 
