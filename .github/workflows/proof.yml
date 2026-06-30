@@ -1,0 +1,20 @@
+name: proof
+
+on:
+  push:
+    branches:
+      - main
+      - feat/codex-plugin-grind-v0
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: extractions/setup-just@v2
+      - name: Run proof
+        run: just proof

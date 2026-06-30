@@ -1,0 +1,11 @@
+{
+  "kind": "cv-app.synthetic-candidate-fixture",
+  "version": 1,
+  "candidate_id": "candidate.morgan-vale",
+  "synthetic": true,
+  "contains_real_personal_data": false,
+  "safe_for_public_distribution": true,
+  "focus": "Does the available evidence support describing the candidate as a technical lead, or is integration owner more accurate?",
+  "source": "source.md",
+  "expected_closure": "expected-closure.md"
+}
