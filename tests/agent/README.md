@@ -2,13 +2,16 @@
 
 This directory contains the model-backed acceptance test for the installed `cv-app` plugin.
 
-The ordinary `just proof` command remains deterministic and does not call a model. The local acceptance harness is opt-in because it requires:
+The ordinary deterministic proof does not call a model. The local acceptance harness is opt-in because it requires:
 
 - network access to clone the selected repository ref;
+- Bash, Git, and Python 3;
 - a current Codex CLI;
 - saved authentication from `codex login`;
 - model usage;
 - temporary changes to local Codex plugin configuration.
+
+`just` is optional convenience tooling. It is not required for acceptance.
 
 ## What it proves
 
@@ -28,13 +31,27 @@ fresh clone
 
 It does not copy `SKILL.md` into `.agents/skills`. The spawned consumer uses the installed plugin.
 
-## Run directly
+## Run the full workcell
 
-From any trusted directory:
+From the repository checkout:
 
 ```bash
 CV_APP_ACCEPTANCE_REF=feat/codex-plugin-grind-v0 \
+bash scripts/run_local_acceptance_workcell.sh
+```
+
+This dependency-free entrypoint runs:
+
+```bash
+python3 scripts/validate_plugin.py
+python3 -m unittest discover -s tests -p 'test_*.py'
 bash scripts/run_codex_local_acceptance.sh
+```
+
+When `just` happens to be installed, this is equivalent:
+
+```bash
+just agent-acceptance
 ```
 
 Optional environment variables:
@@ -60,7 +77,7 @@ Give a fresh local Codex agent the complete prompt in:
 tests/agent/prompts/local-supervisor-workcell.md
 ```
 
-That supervisor clones the repository, runs deterministic proof, invokes the nested consumer acceptance harness, and inspects its receipts.
+That supervisor clones the repository, invokes the dependency-free workcell entrypoint, and inspects its receipts.
 
 The nested consumer prompt is:
 
@@ -108,4 +125,4 @@ Cleanup failure makes the entire acceptance run fail. The generated output direc
 - Structured output constrains the final report but does not reveal private model reasoning.
 - Plugin discovery and installation remain experimental Codex CLI features.
 - The test proves instruction behavior, not candidate storage, atomic promotion, MCP tools, remote operation, or CV rendering.
-- The current execution environment used to author this slice had neither a Codex CLI nor working GitHub DNS, so the model-backed harness must be executed on a real authenticated local Codex host. Deterministic repository tests remain suitable for CI.
+- A real authenticated local Codex host is still required for the model-backed run. Deterministic repository tests remain suitable for CI.
