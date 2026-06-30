@@ -80,6 +80,7 @@ mkdir -p "$OUT_ROOT"
 printf '%s\n' "$REPO_URL" > "$OUT_ROOT/repository.txt"
 printf '%s\n' "$REF" > "$OUT_ROOT/requested-ref.txt"
 codex --version > "$OUT_ROOT/codex-version.txt"
+codex exec --help > "$OUT_ROOT/codex-exec-help.txt"
 python3 --version > "$OUT_ROOT/python-version.txt" 2>&1
 git --version > "$OUT_ROOT/git-version.txt"
 if ! codex login status > "$OUT_ROOT/codex-login-status.txt" 2> "$OUT_ROOT/codex-login-status.stderr"; then
@@ -157,7 +158,7 @@ CODEX_ARGS=(
   exec
   --ephemeral
   --sandbox workspace-write
-  --ask-for-approval never
+  --config 'approval_policy="never"'
   --config 'web_search="disabled"'
   --config 'mcp_servers={}'
   --config 'apps={}'
